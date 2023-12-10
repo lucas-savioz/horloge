@@ -1,14 +1,11 @@
 import time
+import os
 
 # Insérer l'heure
-heure_initiale = 16
-minute_initiale = 30
-seconde_initiale = 0
+heure_initiale = (16, 30, 0)
 
 # Insérer l'heure de l'alarme
-heure_alarme = 16
-minute_alarme = 30
-seconde_alarme = 15
+heure_alarme = (16, 30, 15)
 
 def convertir_en_format_am_pm(heure, minute, seconde):
     # Convertir l'heure en format AM/PM
@@ -16,9 +13,10 @@ def convertir_en_format_am_pm(heure, minute, seconde):
     heure_am_pm = heure % 12 if heure % 12 != 0 else 12
     return heure_am_pm, minute, seconde, am_pm
 
-def afficher_heure_et_alarme(heure, minute, seconde, heure_alarme, minute_alarme, seconde_alarme, format_heure):
+def afficher_heure_et_alarme(heure_initiale, heure_alarme, format_heure):
 
     while True:
+        heure, minute, seconde = heure_initiale
 
         # Conditions pour afficher le format de l'heure
         if format_heure == "24H":
@@ -29,29 +27,36 @@ def afficher_heure_et_alarme(heure, minute, seconde, heure_alarme, minute_alarme
         else:
             print("Format non valide")
             return
-        # Imprime le format et l'heure choisi
-        print(f"Heure actuelle ({format_heure}): {heure_actuelle}")
+        # Efface la ligne précédente
+        os.system('cls' if os.name == 'nt' else 'clear')
+        # Imprime l'heure choisi
+        print(f"{heure_actuelle}")
 
         # Vérifie l'heure de l'alarme
-        if heure == heure_alarme and minute == minute_alarme and seconde == seconde_alarme:
+        if heure == heure_alarme[0] and minute == heure_alarme[1] and seconde == heure_alarme[2]:
+            # Efface la ligne précédente
+            os.system('cls' if os.name == 'nt' else 'clear')
             print("Snoooz ! Snoooz !")
-
-        # Mettre en pause pendant une seconde entre chaque seconde
-        time.sleep(1)
 
         # Condition heure/minute/seconde du temps actuel
         seconde += 1
         if seconde == 60:
             seconde = 0
             minute += 1
-        if minute == 60:
-            minute = 0
-            heure += 1
-        if heure == 24:
-            heure = 0
+            if minute == 60:
+                minute = 0
+                heure += 1
+                if heure == 24:
+                    heure = 0
+
+        # Mettre en pause pendant une seconde entre chaque seconde
+        time.sleep(1)
+
+        # Créez un nouveau tuple avec la nouvelle heure, minute et seconde
+        heure_initiale = (heure, minute, seconde)
 
 # Demande à l'utilisateur de choisir le format d'heure (en majuscule)
 format_heure = input("Choisissez le format d'heure ('24H' ou 'AM/PM') : ").upper()
 
 # Lance la fonction d'affichage de l'heure et de l'alarme
-afficher_heure_et_alarme(heure_initiale, minute_initiale, seconde_initiale, heure_alarme, minute_alarme, seconde_alarme, format_heure)
+afficher_heure_et_alarme(heure_initiale, heure_alarme, format_heure)
